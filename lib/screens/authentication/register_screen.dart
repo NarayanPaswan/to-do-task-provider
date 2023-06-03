@@ -108,14 +108,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 height: 15,
               ),
       
-              //   AppTextFormField(
-              //   controller: _confirmPassword,
-              //   hintText: Labels.confirmPassword,
-              //   prefixIcon: Icons.lock_outline_rounded,
-              //   obscureText: true,
-              // ),
-
-                Consumer<AuthenticationProvider>(
+        
+              Consumer<AuthenticationProvider>(
               builder: (context, auth, child) {
               return AppTextFormField(
               controller: _confirmPassword,

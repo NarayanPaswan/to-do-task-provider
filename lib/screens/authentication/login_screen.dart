@@ -38,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
   // final authenticationProvider = Provider.of<AuthenticationProvider>(context);  
-    print("Re-Build");
+    // print("Re-Build");
     return Scaffold(
       body: Form(
         key: _formKey,
@@ -113,9 +113,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         await auth.login( 
                         email: _email.text.trim(), 
                         password: _password.text.trim());
-                        Future.delayed(const Duration(seconds: 2), () {
-                          PageNavigator(ctx: context).nextPageOnly(page: const HomeScreen());
-                        });
+                        // ignore: use_build_context_synchronously
+                        PageNavigator(ctx: context).nextPageOnly(page: const HomeScreen());
+                        // Future.delayed(const Duration(seconds: 2), () {
+                        //   PageNavigator(ctx: context).nextPageOnly(page: const HomeScreen());
+                        // });
                         } catch (e) {
                           AppErrorSnackBar(context).error(e);
                         }

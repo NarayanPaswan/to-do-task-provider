@@ -13,20 +13,20 @@ class StudentsModel {
 }
 
 class Data {
-  int? currentPage;
+  num? currentPage;
   // List<Data>? data;
   List<StudentData>? data; // Modify the type to StudentData
   String? firstPageUrl;
-  int? from;
-  int? lastPage;
+  num? from;
+  num? lastPage;
   String? lastPageUrl;
   List<Links>? links;
   String? nextPageUrl;
   String? path;
-  int? perPage;
+  num? perPage;
   String? prevPageUrl;
-  int? to;
-  int? total;
+  num? to;
+  num? total;
 
   Data(
       {this.currentPage,
@@ -46,7 +46,7 @@ class Data {
   Data.fromJson(Map<String, dynamic> json) {
     currentPage = json['current_page'];
     if (json['data'] != null) {
-      data = <StudentData>[]; // Modify the type to StudentData
+       data = <StudentData>[]; // Modify the type to StudentData
       json['data'].forEach((v) {
         data!.add(StudentData.fromJson(v)); // Modify the type to StudentData
       });
@@ -69,68 +69,88 @@ class Data {
     total = json['total'];
   }
 
-  
 }
 
 class StudentData {
   int? id;
+  String? photo;
+  String? resume;
   String? name;
-  String? image;
-  String? mobileNo;
+  String? contactNumber;
   String? dateOfBirth;
-  String? gender;
-  String? company;
-  String? countryId;
+  String? address;
+  String? postalCode;
+  int? countryId;
   String? countryName;
-  String? stateId;
+  int? stateId;
   String? stateName;
-  String? cityId;
+  int? cityId;
   String? cityName;
+  String? gender;
   String? maritalStatus;
-  num? userId;
+  String? workExperience;
+  String? companyName;
+  String? designation;
+  String? durationFrom;
+  String? durationUpto;
+  int? userId;
   String? createdAt;
   String? updatedAt;
 
   StudentData(
       {this.id,
+      this.photo,
+      this.resume,
       this.name,
-      this.image,
-      this.mobileNo,
+      this.contactNumber,
       this.dateOfBirth,
-      this.gender,
-      this.company,
+      this.address,
+      this.postalCode,
       this.countryId,
       this.countryName,
       this.stateId,
       this.stateName,
       this.cityId,
       this.cityName,
+      this.gender,
       this.maritalStatus,
+      this.workExperience,
+      this.companyName,
+      this.designation,
+      this.durationFrom,
+      this.durationUpto,
       this.userId,
       this.createdAt,
       this.updatedAt});
 
   StudentData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    photo = json['photo'];
+    resume = json['resume'];
     name = json['name'];
-    image = json['image'];
-    mobileNo = json['mobile_no'];
+    contactNumber = json['contact_number'];
     dateOfBirth = json['date_of_birth'];
-    gender = json['gender'];
-    company = json['company'];
+    address = json['address'];
+    postalCode = json['postal_code'];
     countryId = json['country_id'];
     countryName = json['country_name'];
     stateId = json['state_id'];
     stateName = json['state_name'];
     cityId = json['city_id'];
     cityName = json['city_name'];
+    gender = json['gender'];
     maritalStatus = json['marital_status'];
+    workExperience = json['work_experience'];
+    companyName = json['company_name'];
+    designation = json['designation'];
+    durationFrom = json['duration_from'];
+    durationUpto = json['duration_upto'];
     userId = json['user_id'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
   }
 
-  
+ 
 }
 
 class Links {
@@ -146,5 +166,5 @@ class Links {
     active = json['active'];
   }
 
-  
+ 
 }

@@ -1,6 +1,4 @@
-import 'dart:io';
-
-import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../model/country_list_model.dart';
 import '../../provider/student_provider.dart';
@@ -12,38 +10,55 @@ import '../../widgets/app_textform_field.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textfield.dart';
 import '../home/home_screen.dart';
-import 'package:intl/intl.dart';
 
-class AddStudentScreen extends StatefulWidget {
-  const AddStudentScreen({super.key});
+// ignore: must_be_immutable
+class UpdateStudentScreen extends StatefulWidget {
+  int id;
+  String? studenName;
+  String? contactNumber;
+  String? dateOfBirth;
+  String? countryId;
+  String? stateId;
+
+  UpdateStudentScreen({
+    super.key,
+    required this.id,
+    this.studenName,
+    this.contactNumber,
+    this.dateOfBirth,
+    this.countryId,
+    this.stateId,
+  });
 
   @override
-  State<AddStudentScreen> createState() => _AddStudentScreenState();
+  State<UpdateStudentScreen> createState() => _UpdateStudentScreenState();
 }
 
-class _AddStudentScreenState extends State<AddStudentScreen> {
+class _UpdateStudentScreenState extends State<UpdateStudentScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _fullNameController = TextEditingController();
-  final TextEditingController _contactNumberController = TextEditingController();
+  final _fullNameController = TextEditingController();
+  final _contactNumberController = TextEditingController();
   final _dateOfBirthController = TextEditingController();
   final _countryIdController = TextEditingController();
   final _stateIdController = TextEditingController();
-  final _photoController = TextEditingController();
-  
-  File? _imageFile;
-  final _picker = ImagePicker();
-
-  Future getImage()async{
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
-    if(pickedFile != null){
-      setState(() {
-        _imageFile = File(pickedFile.path);
-        print('your image path is: $_imageFile');
-      });
-    }
-  }
 
   final studentTaskProvider = StudentTaskProvider();
+
+  @override
+  void initState(){
+    super.initState();
+    print("Your state id is: ${widget.stateId}");
+    print("Your Country id is: ${widget.countryId}");
+    studentTaskProvider.fetchStatesForCountry(widget.countryId);
+    setState(() {
+      _fullNameController.text = widget.studenName.toString();
+      _contactNumberController.text = widget.contactNumber ?? '';
+      _dateOfBirthController.text = widget.dateOfBirth ?? '';
+      _countryIdController.text=widget.countryId ?? '';
+      _stateIdController.text=widget.stateId ?? '';
+      
+    });
+  }
 
   @override
   void dispose() {
@@ -52,49 +67,27 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
     _dateOfBirthController.dispose();
     _countryIdController.dispose();
     _stateIdController.dispose();
-    _photoController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // final studentTaskProvider1 = Provider.of<StudentTaskProvider>(context);
-
-    // print("Re build widget");
+    // print("Rebuild widget");
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Task"),
+        title: const Text("Update Task"),
       ),
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    
-                    image: _imageFile == null ? null : DecorationImage(
-                      image: FileImage(_imageFile ?? File('')),
-                      )
-                  ),
-                  child: Center(
-                    child: IconButton(
-                      onPressed: (){
-                        getImage();
-                      }, 
-                      icon: const Icon(Icons.image, size: 50, color: Colors.black,)),
-                  ),
-              
-                ),
-              ),
               CustomTextField(
                 controller: _fullNameController,
                 hintText: 'Full Name',
+                onChanged: (newName) {
+                  studentTaskProvider.name = newName;
+                },
                 validator: (value) {
                   return studentTaskProvider.validateFullName(value!);
                 },
@@ -124,71 +117,71 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                   }
                 },
               ),
-                
+              
               Consumer<StudentTaskProvider>(
-              builder: (context, studentTaskProvider1, _) {
-                return FutureBuilder<CountryListModel?>(
-                future: studentTaskProvider.fetchCountryList(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
-                  } else
-                   if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else if (!snapshot.hasData) {
-                    return const Text('No data available');
-                  } else {
-                    final countryList = snapshot.data!.data;
-                
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        height: 56,
-                        padding: const EdgeInsets.only(left: 6, right: 6),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(
-                              color: AppColors.dropdownBorderColor, width: 1),
-                          borderRadius: BorderRadius.circular(8),
+                builder: (context, studentTaskProvider1, _) {
+                  return FutureBuilder<CountryListModel?>(
+                  future: studentTaskProvider.fetchCountryList(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else
+                     if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else if (!snapshot.hasData) {
+                      return const Text('No data available');
+                    } else {
+                      final countryList = snapshot.data!.data;
+                      final selectedCountryId = int.tryParse(_countryIdController.text);
+                  
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          height: 56,
+                          padding: const EdgeInsets.only(left: 6, right: 6),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(
+                                color: AppColors.dropdownBorderColor, width: 1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          
+                          child: DropdownButton<int>(
+                          style: AppTextStyle.interQuestionResponse,
+                          hint: const Text("Select country: "),
+                          isExpanded: true,
+                           underline: const SizedBox(),
+                            value: selectedCountryId, 
+                            items: countryList!.map((country) {
+                              return DropdownMenuItem<int>(
+                                value: country.id,
+                                child: Text(country.countryName ?? ''),
+                              );
+                            }).toList(),
+                            onChanged: (newCountryId) async{
+                               _countryIdController.text = newCountryId.toString();
+                               studentTaskProvider1.setSelectedCountryId(newCountryId);
+                               print('new country id is $newCountryId') ;
+                              
+                              studentTaskProvider1.selectedStateId = null;
+                              _stateIdController.text = '';
+                              // Fetch states based on the selected country
+                             await studentTaskProvider1.fetchStatesForCountry(studentTaskProvider1.selectedCountryId);
+                             
+                            },
+                          ),
+                  
                         ),
                         
-                        child: DropdownButton<int>(
-                        style: AppTextStyle.interQuestionResponse,
-                        hint: const Text("Select country: "),
-                        isExpanded: true,
-                         underline: const SizedBox(),
-                          value: studentTaskProvider1.selectedCountryId, 
-                          items: countryList!.map((country) {
-                            return DropdownMenuItem<int>(
-                              value: country.id,
-                              child: Text(country.countryName ?? ''),
-                            );
-                          }).toList(),
-                          onChanged: (newCountryId) async{
-                             studentTaskProvider1.setSelectedCountryId(newCountryId);
-                            _countryIdController.text = newCountryId.toString();
-                            
-                            studentTaskProvider1.selectedStateId = null;
-                
-                            // Fetch states based on the selected country
-                           await studentTaskProvider1.fetchStatesForCountry(studentTaskProvider1.selectedCountryId);
-                           
-                          },
-                        ),
-                
-                      ),
-                      
-                    );
-                
-                  }
-                },
-              );
-              }
-              ),
-                
-              
-                
-                 const Padding(
+                      );
+                  
+                    }
+                  },
+                );
+                }
+                ),
+
+                  const Padding(
                  padding:  EdgeInsets.all(8.0),
                  child:  Align(
                   alignment: Alignment.centerLeft,
@@ -196,12 +189,13 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                   ),
                ),
               
-              Consumer<StudentTaskProvider>(
+               Consumer<StudentTaskProvider>(
               builder: (context, studentTaskProvider1, _) {
+                 final selectedStateId = int.tryParse(_stateIdController.text);
                 return  Padding(
                  padding: const EdgeInsets.all(8.0),
                  child: DropdownButton<int>(
-                  value: studentTaskProvider1.selectedStateId,
+                  value: studentTaskProvider1.selectedStateId ?? selectedStateId,
                   
                   onChanged: (newValueStateId)async{
                      studentTaskProvider1.setSelectedStateId(newValueStateId);
@@ -221,8 +215,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                   ),
                );
               }),
-               
-            
+
               const SizedBox(
                 height: 15,
               ),
@@ -232,23 +225,21 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                   if (addstudent.responseMessage != '') {
                     showMessage(
                         message: addstudent.responseMessage, context: context);
-                
+        
                     ///Clear the response message to avoid duplicate
                     addstudent.clear();
                   }
                 });
                 return customButton(
-                  // text: Labels.signIn,
+                  text: Labels.update,
                   ontap: () async {
                     if (_formKey.currentState!.validate()) {
-                      addstudent.addJob(
+                      addstudent.updateJob(
+                        id: widget.id,
                         fullName: _fullNameController.text.trim(),
                         contactNumber: _contactNumberController.text.trim(),
                         dateOfBirth: _dateOfBirthController.text,
-                        countryId: _countryIdController.text,
-                        stateId: _stateIdController.text,
-                        photo: _imageFile,
-
+                        countryId:_countryIdController.text,
                       );
                       Future.delayed(const Duration(seconds: 1), () {
                         PageNavigator(ctx: context)

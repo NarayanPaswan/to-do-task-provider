@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import '../../database/db_provider.dart';
 import '../../utils/components/app_url.dart';
 import '../../utils/exports.dart';
@@ -122,20 +121,20 @@ class AuthenticationProvider extends ChangeNotifier {
       if (e is DioError) {
       final errorResponse = e.response?.data;
       if (errorResponse != null && errorResponse['name'] != null) {
-        final _responseMessage = errorResponse['name'][0];
-        throw _responseMessage;
+        throw _responseMessage = errorResponse['name'][0];
+        
 
       }else if (errorResponse != null && errorResponse['email'] != null) {
-        final _responseMessage = errorResponse['email'][0];
-        throw Exception(_responseMessage);
+        throw _responseMessage = errorResponse['email'][0];
+        // throw Exception(_responseMessage);
       }
       else if (errorResponse != null && errorResponse['password'] != null) {
-        final _responseMessage = errorResponse['password'][0];
-       throw _responseMessage;
+        throw _responseMessage = errorResponse['password'][0];
+       
       }
       else if (errorResponse != null && errorResponse['phone'] != null) {
-        final _responseMessage = errorResponse['phone'][0];
-        throw _responseMessage;
+        throw _responseMessage = errorResponse['phone'][0];
+        
       }
       
       else if (errorResponse != null && errorResponse['error'] != null) {
@@ -200,12 +199,12 @@ class AuthenticationProvider extends ChangeNotifier {
       if (e is DioError) {
       final errorResponse = e.response?.data;
       if (errorResponse != null && errorResponse['email'] != null) {
-        final _responseMessage = errorResponse['email'][0];
-        throw Exception(_responseMessage);
+        throw _responseMessage = errorResponse['email'][0];
+        // throw Exception(_responseMessage);
       }
       else if (errorResponse != null && errorResponse['password'] != null) {
-        final _responseMessage = errorResponse['password'][0];
-       throw _responseMessage;
+        throw _responseMessage = errorResponse['password'][0];
+       
       }
       else if (errorResponse != null && errorResponse['error'] != null) {
         throw Exception(errorResponse['error']);

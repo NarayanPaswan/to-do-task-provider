@@ -12,6 +12,9 @@ class AppTextFormField extends StatelessWidget {
   final String? initialValue;
   final bool obscureText;
   final TextEditingController? controller;
+  final int? maxLength; 
+  final VoidCallback? onTap;
+  final bool readOnly;
   
   
   const AppTextFormField({super.key, 
@@ -24,6 +27,10 @@ class AppTextFormField extends StatelessWidget {
   this.onChanged, 
   this.initialValue,
   this.controller,
+  this.maxLength,
+  this.onTap,
+  this.readOnly = false,
+
   });
 
   @override
@@ -31,6 +38,8 @@ class AppTextFormField extends StatelessWidget {
     return  Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextFormField(
+              onTap: onTap,
+              readOnly: readOnly,
               style: AppTextStyle.interQuestionResponse,
               decoration:  InputDecoration(
                 hintText: hintText,
@@ -60,11 +69,13 @@ class AppTextFormField extends StatelessWidget {
                 : null,
               ),
              keyboardType: keyboardType, 
+             maxLength: maxLength,
              onChanged: onChanged,
             controller: controller,
              validator: validator,
              initialValue: initialValue,
              obscureText: obscureText,
+             
              ),
     );
   }
