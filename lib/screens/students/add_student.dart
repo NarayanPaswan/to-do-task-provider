@@ -28,7 +28,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
   final _dateOfBirthController = TextEditingController();
   final _countryIdController = TextEditingController();
   final _stateIdController = TextEditingController();
-  final _photoController = TextEditingController();
+  
   
   File? _imageFile;
   final _picker = ImagePicker();
@@ -38,7 +38,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
     if(pickedFile != null){
       setState(() {
         _imageFile = File(pickedFile.path);
-        print('your image path is: $_imageFile');
+        // print('your image path is: $_imageFile');
       });
     }
   }
@@ -52,7 +52,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
     _dateOfBirthController.dispose();
     _countryIdController.dispose();
     _stateIdController.dispose();
-    _photoController.dispose();
+    
     super.dispose();
   }
 
@@ -74,10 +74,10 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 100,
+                  width: 200,
+                  height: 200,
                   decoration: BoxDecoration(
-                    
+                    borderRadius: BorderRadius.circular(100),
                     image: _imageFile == null ? null : DecorationImage(
                       image: FileImage(_imageFile ?? File('')),
                       )
@@ -206,7 +206,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                   onChanged: (newValueStateId)async{
                      studentTaskProvider1.setSelectedStateId(newValueStateId);
                       _stateIdController.text = newValueStateId.toString();
-                      print("Selected state value ${studentTaskProvider1.selectedStateId}");  
+                      // print("Selected state value ${studentTaskProvider1.selectedStateId}");  
                   },
                   
                   isExpanded: true,

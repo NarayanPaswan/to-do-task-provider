@@ -24,27 +24,22 @@
 // class _AddStudentScreenState extends State<AddStudentScreen> {
 //   final _formKey = GlobalKey<FormState>();
 //   final TextEditingController _fullNameController = TextEditingController();
- 
+
   
-//   File? _imageFile;
-//   final _picker = ImagePicker();
+//   // final studentTaskProvider = StudentTaskProvider();
+//    late StudentTaskProvider studentTaskProvider;
 
-//   Future getImage()async{
-//     final pickedFile = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
-//     if(pickedFile != null){
-//       setState(() {
-//         _imageFile = File(pickedFile.path);
-//         print('your image path is: $_imageFile');
-//       });
-//     }
+//   @override
+//   void initState() {
+//     super.initState();
+//     studentTaskProvider = Provider.of<StudentTaskProvider>(context, listen: false);
 //   }
-
-//   final studentTaskProvider = StudentTaskProvider();
 
 //   @override
 //   void dispose() {
 //     _fullNameController.dispose();
-   
+
+    
 //     super.dispose();
 //   }
 
@@ -69,14 +64,14 @@
 //                   width: MediaQuery.of(context).size.width,
 //                   height: 100,
 //                   decoration: BoxDecoration(
-//                     image: _imageFile == null ? null : DecorationImage(
-//                       image: FileImage(_imageFile ?? File('')),
+//                     image: studentTaskProvider.imageFile == null ? null : DecorationImage(
+//                       image: FileImage(studentTaskProvider.imageFile ?? File('')),
 //                       )
 //                   ),
 //                   child: Center(
 //                     child: IconButton(
 //                       onPressed: (){
-//                         getImage();
+//                         studentTaskProvider.getImage();
 //                       }, 
 //                       icon: const Icon(Icons.image, size: 50, color: Colors.black,)),
 //                   ),
@@ -91,6 +86,7 @@
 //                 },
 //               ),
               
+               
             
 //               const SizedBox(
 //                 height: 15,
@@ -112,6 +108,8 @@
 //                     if (_formKey.currentState!.validate()) {
 //                       addstudent.addJob(
 //                         fullName: _fullNameController.text.trim(),
+//                         photo: studentTaskProvider.imageFile,
+
 //                       );
 //                       Future.delayed(const Duration(seconds: 1), () {
 //                         PageNavigator(ctx: context)

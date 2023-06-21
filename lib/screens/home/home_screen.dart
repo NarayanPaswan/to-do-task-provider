@@ -78,91 +78,97 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body:
       Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          
           students.isNotEmpty ?
-          ListView.builder(
-            controller: scrollController,
-            itemCount: isLoadingMore ? students.length + 1 : students.length,
-            itemBuilder: (context, index){
-              if(index< students.length){
-                 return Padding(
-                   padding: const EdgeInsets.all(12.0),
-                   child: Card(
-                     child: ListTile(
-                      leading: CircleAvatar(
-                        child: Text("${index +1 }"),
-                      ),
-                     title: Text(students[index].name.toString()),
-                     trailing: GestureDetector(
-                      onTap: (){
-                        showModalBottomSheet(
-                          backgroundColor: Theme.of(context).primaryColor,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              topRight: Radius.circular(20),
-                            )
-                          ),
-                          context: context, 
-                          builder: (BuildContext context) {
-                            return Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                 GestureDetector(
-                                 onTap: ()async{
-                                 Navigator.pop(context); 
-                                await PageNavigator(ctx: context).nextPage(page: UpdateStudentScreen(
-                                  id: students[index].id!.toInt(),
-                                  studenName: students[index].name.toString(),
-                                  contactNumber: students[index].contactNumber ?? '',
-                                  dateOfBirth: students[index].dateOfBirth ?? '',
-                                  countryId: students[index].countryId.toString(),
-                                  stateId : students[index].stateId.toString(),
-                                 ));
-                                  },
-
-                                   child: const ListTile(
-                                    leading: Icon(Icons.edit, color: Colors.white,),
-                                    title: Text("Edit", style: TextStyle(color: Colors.white),
-                                  ),),),
-   
-                                  GestureDetector(
+          Expanded(
+            child: ListView.builder(
+              controller: scrollController,
+              itemCount: isLoadingMore ? students.length + 1 : students.length,
+              itemBuilder: (context, index){
+                if(index< students.length){
+                   return Padding(
+                     padding: const EdgeInsets.all(12.0),
+                     child: Card(
+                       child: ListTile(
+                        leading: CircleAvatar(
+                          child: Text("${index +1 }"),
+                        ),
+                       title: Text(students[index].name.toString()),
+                       trailing: GestureDetector(
+                        onTap: (){
+                          showModalBottomSheet(
+                            backgroundColor: Theme.of(context).primaryColor,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20),
+                              )
+                            ),
+                            context: context, 
+                            builder: (BuildContext context) {
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                   GestureDetector(
                                    onTap: ()async{
-                                    Navigator.pop(context); 
-                                   await studentTaskProvider.deleteJob(
-                                      id: students[index].id!.toInt(),
-                                      context: context
-                                      );
-                                    await fetchAllStudents(); 
-                                  },
-                                   child: const ListTile(
-                                    leading: Icon(Icons.delete, color: Colors.white,),
-                                    title: Text("Delete", style: TextStyle(color: Colors.white),
-                                  ),),),
-                            
-                              ],
-                            );
-                          });
-                      },
-                      child: const Icon(Icons.more_vert, color: Colors.black,)
-                      ),
+                                   Navigator.pop(context); 
+                                  await PageNavigator(ctx: context).nextPage(page: UpdateStudentScreen(
+                                    id: students[index].id!.toInt(),
+                                    studenName: students[index].name.toString(),
+                                    // contactNumber: students[index].contactNumber ?? '',
+                                    // dateOfBirth: students[index].dateOfBirth ?? '',
+                                    // countryId: students[index].countryId.toString(),
+                                    // stateId : students[index].stateId.toString(),
+                                    photo : students[index].photo.toString(),
+                                   ));
+                                    },
+          
+                                     child: const ListTile(
+                                      leading: Icon(Icons.edit, color: Colors.white,),
+                                      title: Text("Edit", style: TextStyle(color: Colors.white),
+                                    ),),),
+             
+                                    GestureDetector(
+                                     onTap: ()async{
+                                      Navigator.pop(context); 
+                                     await studentTaskProvider.deleteJob(
+                                        id: students[index].id!.toInt(),
+                                        context: context
+                                        );
+                                      await fetchAllStudents(); 
+                                    },
+                                     child: const ListTile(
+                                      leading: Icon(Icons.delete, color: Colors.white,),
+                                      title: Text("Delete", style: TextStyle(color: Colors.white),
+                                    ),),),
+                              
+                                ],
+                              );
+                            });
+                        },
+                        child: const Icon(Icons.more_vert, color: Colors.black,)
+                        ),
+                       ),
                      ),
-                   ),
-                 );
+                   );
+                }
+                
+                else{
+                return  const Center(child: CircularProgressIndicator());
+                }
+                
               }
-              
-              else{
-              return  const Center(child: CircularProgressIndicator());
-              }
-              
-            }
-            ):  const Padding(
+              ),
+          ):  const Padding(
               padding: EdgeInsets.only(top:10.0, bottom: 40.0),
               child: Center(child: CircularProgressIndicator()),
             ),
           if (!hasMoreData)
              const Padding(
-               padding: EdgeInsets.only(top: 30.0, bottom: 30.0),
+               padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
                child: Center(child: 
                Text("You have fetched all of the content")),
              ),

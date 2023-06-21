@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:todotaskprovider/model/country_list_model.dart';
 import '../../database/db_provider.dart';
 import '../../utils/components/app_url.dart';
@@ -9,6 +10,28 @@ import '../model/state_model.dart';
 import '../model/student_model.dart';
 
 class StudentTaskProvider extends ChangeNotifier {
+  
+  
+ 
+
+  /*
+  File? _imageFile;
+  final _picker = ImagePicker();
+  File? get imageFile => _imageFile;
+
+   Future<void> getImage()async{
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
+    if(pickedFile != null){
+        _imageFile = File(pickedFile.path);
+        print('your image path is: $_imageFile');
+        notifyListeners();
+      
+    }
+  }
+
+  */
+ 
+
   final dio = Dio();
   //setter
 
@@ -57,33 +80,7 @@ class StudentTaskProvider extends ChangeNotifier {
         'user_id': userId,
       });
     }
-    
-    // final bytes = await photo!.readAsBytes();
-    // final formData = FormData.fromMap({
-      
-     
-    //   // 'photo': MultipartFile.fromBytes(bytes, filename: photo.path.split('/').last) ,
-    //   'photo': photo != null ? await MultipartFile.fromBytes(bytes, filename: photo.path.split('/').last) : null,
-    //   'name': fullName,
-    //   'contact_number': contactNumber,
-    //   'date_of_birth': dateOfBirth,
-    //   'country_id': countryId,
-    //   'state_id': stateId,
-    //   'user_id': userId,
-    // });
-
-   /* 
-    final bytes = await photo!.readAsBytes();
-    final formData = FormData.fromMap({
-      'photo': MultipartFile.fromBytes(bytes, filename: photo.path.split('/').last) ,
-      'name': fullName,
-      'contact_number': contactNumber,
-      'date_of_birth': dateOfBirth,
-      'country_id': countryId,
-      'state_id': stateId,
-      'user_id': userId,
-    });
-  */
+   
     try {
       final response = await dio.post(AppUrl.addJobUri,
           data: formData,
@@ -180,22 +177,31 @@ class StudentTaskProvider extends ChangeNotifier {
   */
 
   Future<void> updateJob({required int id,BuildContext? context,String? fullName,
-    String? contactNumber, String? dateOfBirth, String? countryId,
+    File? photo,
   }) async {
     final urlUpdateJob = '${AppUrl.updateJobUri}?id=$id';
     final token = await DatabaseProvider().getToken();
 
     _isLoading = true;
     notifyListeners();
-    final body = {
-      'name': fullName,
-      'contact_number': contactNumber,
-      'date_of_birth': dateOfBirth,
-      'country_id': countryId,
-    };
+    FormData formData;
+    
+   if (photo != null) {
+      final bytes = await photo.readAsBytes();
+      formData = FormData.fromMap({
+        'photo': MultipartFile.fromBytes(bytes, filename: photo.path.split('/').last),
+        'name': fullName,
+        
+      });
+    } else {
+      formData = FormData.fromMap({
+        'name': fullName,
+        
+      });
+    }
     try {
       final response = await dio.post(urlUpdateJob,
-          data: body,
+          data: formData,
           options: Options(headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer $token",
@@ -343,7 +349,7 @@ Future<CountryListModel?> fetchCountryList() async {
   int? selectedStateId;
   void setSelectedStateId(int? id) {
     selectedStateId = id;
-     print("selectedStateId: $selectedStateId");
+    //  print("selectedStateId: $selectedStateId");
     notifyListeners();
   }
 

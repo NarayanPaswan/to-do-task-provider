@@ -1,7 +1,7 @@
 class AppUrl{
-//  static const String baseUrl ="http://192.168.16.104:8000/api/";
-  static const String baseUrl ="http://192.168.16.102:8000/api/";
-  static const String imageUrl ="http://192.168.16.104:8000/storage/"; 
+ static const String baseUrl ="http://192.168.16.103:8000/api/";
+  // static const String baseUrl ="http://192.168.16.104:8000/api/";
+  static const String imageUrl ="http://192.168.16.103:8000/storage/photo/"; 
 
   static const String registrationUri ="${baseUrl}auth/register";
   static const String loginUri ="${baseUrl}auth/login";

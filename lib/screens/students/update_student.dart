@@ -1,7 +1,11 @@
+import 'dart:io';
+
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../model/country_list_model.dart';
 import '../../provider/student_provider.dart';
+import '../../utils/components/app_url.dart';
 import '../../utils/components/routers.dart';
 import '../../utils/components/snack_message.dart';
 import '../../utils/exports.dart';
@@ -15,19 +19,21 @@ import '../home/home_screen.dart';
 class UpdateStudentScreen extends StatefulWidget {
   int id;
   String? studenName;
-  String? contactNumber;
-  String? dateOfBirth;
-  String? countryId;
-  String? stateId;
+  // String? contactNumber;
+  // String? dateOfBirth;
+  // String? countryId;
+  // String? stateId;
+  String? photo;
 
   UpdateStudentScreen({
     super.key,
     required this.id,
     this.studenName,
-    this.contactNumber,
-    this.dateOfBirth,
-    this.countryId,
-    this.stateId,
+    // this.contactNumber,
+    // this.dateOfBirth,
+    // this.countryId,
+    // this.stateId,
+    this.photo,
   });
 
   @override
@@ -37,25 +43,53 @@ class UpdateStudentScreen extends StatefulWidget {
 class _UpdateStudentScreenState extends State<UpdateStudentScreen> {
   final _formKey = GlobalKey<FormState>();
   final _fullNameController = TextEditingController();
-  final _contactNumberController = TextEditingController();
-  final _dateOfBirthController = TextEditingController();
-  final _countryIdController = TextEditingController();
-  final _stateIdController = TextEditingController();
+  // final _contactNumberController = TextEditingController();
+  // final _dateOfBirthController = TextEditingController();
+  // final _countryIdController = TextEditingController();
+  // final _stateIdController = TextEditingController();
 
   final studentTaskProvider = StudentTaskProvider();
+  File? _imageFile;
+  final _picker = ImagePicker();
+  DecorationImage? _decorationImage;
+
+
+   Future getImage()async{
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
+    if(pickedFile != null){
+      setState(() {
+        _imageFile = File(pickedFile.path);
+        print('your image path is: $_imageFile');
+       _decorationImage = DecorationImage(
+        image: FileImage(_imageFile!),
+      );
+      });
+    }
+  }
+ 
 
   @override
   void initState(){
     super.initState();
-    print("Your state id is: ${widget.stateId}");
-    print("Your Country id is: ${widget.countryId}");
-    studentTaskProvider.fetchStatesForCountry(widget.countryId);
+    // print("Your state id is: ${widget.stateId}");
+    // print("Your Country id is: ${widget.countryId}");
+    print("Your phot link is ${widget.photo}");
+    // studentTaskProvider.fetchStatesForCountry(widget.countryId);
+
+     if (widget.photo != null) {
+    _decorationImage = DecorationImage(
+      image: NetworkImage(AppUrl.imageUrl + widget.photo!),
+      fit: BoxFit.cover,
+    );
+    }
+
     setState(() {
+
       _fullNameController.text = widget.studenName.toString();
-      _contactNumberController.text = widget.contactNumber ?? '';
-      _dateOfBirthController.text = widget.dateOfBirth ?? '';
-      _countryIdController.text=widget.countryId ?? '';
-      _stateIdController.text=widget.stateId ?? '';
+      // _contactNumberController.text = widget.contactNumber ?? '';
+      // _dateOfBirthController.text = widget.dateOfBirth ?? '';
+      // _countryIdController.text=widget.countryId ?? '';
+      // _stateIdController.text=widget.stateId ?? '';
       
     });
   }
@@ -63,10 +97,10 @@ class _UpdateStudentScreenState extends State<UpdateStudentScreen> {
   @override
   void dispose() {
     _fullNameController.dispose();
-    _contactNumberController.dispose();
-    _dateOfBirthController.dispose();
-    _countryIdController.dispose();
-    _stateIdController.dispose();
+    // _contactNumberController.dispose();
+    // _dateOfBirthController.dispose();
+    // _countryIdController.dispose();
+    // _stateIdController.dispose();
     super.dispose();
   }
 
@@ -82,6 +116,30 @@ class _UpdateStudentScreenState extends State<UpdateStudentScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              // Container(
+              //   height: 200.0,
+              //   width: 200.0,
+              //   child: Image.network(widget.photo.toString()),
+              // ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: InkWell(
+                  onTap: (){
+                   getImage();
+                  },
+                  child: Container(
+                    height: 200.0,
+                    width: 200.0,
+                    decoration: BoxDecoration(
+                       borderRadius: BorderRadius.circular(100),
+                      image: _decorationImage,
+                    ),
+                    
+                  ),
+                ),
+
+              ),
+
               CustomTextField(
                 controller: _fullNameController,
                 hintText: 'Full Name',
@@ -92,133 +150,9 @@ class _UpdateStudentScreenState extends State<UpdateStudentScreen> {
                   return studentTaskProvider.validateFullName(value!);
                 },
               ),
-              AppTextFormField(
-                controller: _contactNumberController,
-                hintText: Labels.phone,
-                prefixIcon: Icons.mobile_friendly,
-                keyboardType: TextInputType.number,
-                maxLength: 10,
-                validator: studentTaskProvider.validatePhone,
-              ),
-              AppTextFormField(
-                readOnly: true,
-                controller: _dateOfBirthController,
-                suffixIcon: Icons.calendar_today_rounded,
-                hintText: 'Select date of birth:',
-                onTap: () async {
-                  DateTime? pickDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(1950),
-                      lastDate: DateTime.now());
-                  if (pickDate != null) {
-                    studentTaskProvider.updateSelectedDate(pickDate);
-                    _dateOfBirthController.text = DateFormat('yyyy-MM-dd').format(pickDate);
-                  }
-                },
-              ),
+           
               
-              Consumer<StudentTaskProvider>(
-                builder: (context, studentTaskProvider1, _) {
-                  return FutureBuilder<CountryListModel?>(
-                  future: studentTaskProvider.fetchCountryList(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CircularProgressIndicator();
-                    } else
-                     if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else if (!snapshot.hasData) {
-                      return const Text('No data available');
-                    } else {
-                      final countryList = snapshot.data!.data;
-                      final selectedCountryId = int.tryParse(_countryIdController.text);
-                  
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          height: 56,
-                          padding: const EdgeInsets.only(left: 6, right: 6),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(
-                                color: AppColors.dropdownBorderColor, width: 1),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          
-                          child: DropdownButton<int>(
-                          style: AppTextStyle.interQuestionResponse,
-                          hint: const Text("Select country: "),
-                          isExpanded: true,
-                           underline: const SizedBox(),
-                            value: selectedCountryId, 
-                            items: countryList!.map((country) {
-                              return DropdownMenuItem<int>(
-                                value: country.id,
-                                child: Text(country.countryName ?? ''),
-                              );
-                            }).toList(),
-                            onChanged: (newCountryId) async{
-                               _countryIdController.text = newCountryId.toString();
-                               studentTaskProvider1.setSelectedCountryId(newCountryId);
-                               print('new country id is $newCountryId') ;
-                              
-                              studentTaskProvider1.selectedStateId = null;
-                              _stateIdController.text = '';
-                              // Fetch states based on the selected country
-                             await studentTaskProvider1.fetchStatesForCountry(studentTaskProvider1.selectedCountryId);
-                             
-                            },
-                          ),
-                  
-                        ),
-                        
-                      );
-                  
-                    }
-                  },
-                );
-                }
-                ),
-
-                  const Padding(
-                 padding:  EdgeInsets.all(8.0),
-                 child:  Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text("States")
-                  ),
-               ),
-              
-               Consumer<StudentTaskProvider>(
-              builder: (context, studentTaskProvider1, _) {
-                 final selectedStateId = int.tryParse(_stateIdController.text);
-                return  Padding(
-                 padding: const EdgeInsets.all(8.0),
-                 child: DropdownButton<int>(
-                  value: studentTaskProvider1.selectedStateId ?? selectedStateId,
-                  
-                  onChanged: (newValueStateId)async{
-                     studentTaskProvider1.setSelectedStateId(newValueStateId);
-                      _stateIdController.text = newValueStateId.toString();
-                      print("Selected state value ${studentTaskProvider1.selectedStateId}");  
-                  },
-                  
-                  isExpanded: true,
-                  menuMaxHeight: 350,
-                  items: studentTaskProvider1.states.map((newValueState) {
-                    return DropdownMenuItem<int>(
-                      value: newValueState.id,
-                      child: Text(newValueState.stateName ?? ''),
-                      );
-                  }).toList(),
-                  
-                  ),
-               );
-              }),
-
-              const SizedBox(
-                height: 15,
-              ),
+             
               Consumer<StudentTaskProvider>(
                   builder: (context, addstudent, child) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -237,9 +171,10 @@ class _UpdateStudentScreenState extends State<UpdateStudentScreen> {
                       addstudent.updateJob(
                         id: widget.id,
                         fullName: _fullNameController.text.trim(),
-                        contactNumber: _contactNumberController.text.trim(),
-                        dateOfBirth: _dateOfBirthController.text,
-                        countryId:_countryIdController.text,
+                        photo: _imageFile,
+                        // contactNumber: _contactNumberController.text.trim(),
+                        // dateOfBirth: _dateOfBirthController.text,
+                        // countryId:_countryIdController.text,
                       );
                       Future.delayed(const Duration(seconds: 1), () {
                         PageNavigator(ctx: context)

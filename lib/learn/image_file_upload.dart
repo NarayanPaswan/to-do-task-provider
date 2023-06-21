@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 
 import '../database/db_provider.dart';
 import '../utils/components/app_url.dart';
@@ -42,10 +43,14 @@ class _ImageFileUploadScreenState extends State<ImageFileUploadScreen> {
             "Content-Type": "application/json",
             "Authorization": "Bearer $token",
           }));
-          print(response.data);
+          if (kDebugMode) {
+            print(response.data);
+          }
 
     }else{
-      print("Result is null");
+      if (kDebugMode) {
+        print("Result is null");
+      }
     }      
   
   }

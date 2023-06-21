@@ -98,7 +98,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 validator: (value) {
                     return auth.validatePassword(value!);
                   },             
-              keyboardType: TextInputType.emailAddress,
+              
             );
             }),
 
@@ -126,7 +126,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 validator: (value) {
                     return auth.validateConfirmPassword(value!);
                   },             
-              keyboardType: TextInputType.emailAddress,
+             
             );
             }),
              
