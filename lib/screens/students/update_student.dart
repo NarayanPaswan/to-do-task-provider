@@ -1,16 +1,13 @@
 import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import '../../model/country_list_model.dart';
 import '../../provider/student_provider.dart';
 import '../../utils/components/app_url.dart';
 import '../../utils/components/routers.dart';
 import '../../utils/components/snack_message.dart';
 import '../../utils/exports.dart';
 import '../../utils/labels.dart';
-import '../../widgets/app_textform_field.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textfield.dart';
 import '../home/home_screen.dart';

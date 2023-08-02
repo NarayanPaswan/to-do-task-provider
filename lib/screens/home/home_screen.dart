@@ -20,10 +20,30 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-    int _selectedIndex = 0;
-   void _onItemTapped(int index) {
+  int _selectedIndex = 0;
+  void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+
+      switch (_selectedIndex) {
+        case 0:
+          print('Home');
+          break;
+        case 1:
+          print('Business');
+          PageNavigator(ctx: context).nextPage(page: const TileScreen());
+          break;
+        case 2:
+          print('Dropdown');
+          PageNavigator(ctx: context).nextPage(page: const DropdwonScreen());
+          break;
+        case 3:
+          print('Upload');
+          PageNavigator(ctx: context).nextPage(page: const ImageFileUploadScreen());
+          break;
+      }
+      
+      print('your index is: $_selectedIndex');
     });
   }
   final scrollController = ScrollController();
@@ -179,14 +199,18 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         items: [
            BottomNavigationBarItem(
-            icon: const Icon(Icons.home),
+            icon: IconButton(
+                onPressed: (){
+                  _onItemTapped(0);
+              },
+              icon: const Icon(Icons.home)),
             label: 'Home',
             backgroundColor: AppColors.primaryColor,
           ),
         BottomNavigationBarItem(
             icon: IconButton(
                 onPressed: (){
-                PageNavigator(ctx: context).nextPage(page: const TileScreen());
+                  _onItemTapped(1);
               },
               icon: const Icon(Icons.business)),
             label: 'Business',
@@ -195,7 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
            BottomNavigationBarItem(
             icon: IconButton(
                onPressed: (){
-                PageNavigator(ctx: context).nextPage(page: const DropdwonScreen());
+                  _onItemTapped(2);
               },
               icon: const Icon(Icons.school)),
             label: 'Dropdwon',
@@ -204,7 +228,7 @@ class _HomeScreenState extends State<HomeScreen> {
            BottomNavigationBarItem(
             icon: IconButton(
                onPressed: (){
-                PageNavigator(ctx: context).nextPage(page: const ImageFileUploadScreen());
+                  _onItemTapped(3);
               },
               icon: const Icon(Icons.image)),
             label: 'Upload',

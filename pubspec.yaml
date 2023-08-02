@@ -38,6 +38,11 @@ dependencies:
   jwt_decoder: ^2.0.1
   provider: ^6.0.5
   shared_preferences: ^2.1.1
+  google_maps_flutter: ^2.4.0
+  http: ^1.1.0
+  geocoding: ^2.1.0
+  geolocator: ^9.0.2
+  uuid: ^3.0.7
 
 dev_dependencies:
   flutter_lints: ^2.0.0

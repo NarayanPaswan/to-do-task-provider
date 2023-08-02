@@ -15,5 +15,9 @@ class AppUrl{
   static const String stateFromCountryUri ='${baseUrl}auth/country-wise-state';
   static const String cityFromStateUri ='${baseUrl}auth/state-wise-city';
   
+  static const String taskTypeUri ='${baseUrl}auth/task-type';
+  static const String storeServiceBookingUri ="${baseUrl}auth/store-service-booking";
+  static const String allBookingFieldsUri ="${baseUrl}auth/all-service-booking-fields";
+  
  
 }
